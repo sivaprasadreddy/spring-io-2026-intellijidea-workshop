@@ -1,0 +1,7 @@
+
+== Getting Started with Spring Boot
+
+=== Prerequisites
+* JDK 21+
+* Docker and Docker Compose
+* IntelliJ IDEA
