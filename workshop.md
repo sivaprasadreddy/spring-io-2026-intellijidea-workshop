@@ -198,3 +198,81 @@ Checkout `modulith-refactored` branch.
 * Show package icons representing open/closed packages/modules
 * Show Spring Modulith violations.
 * Use IntelliJ quickfixes to resolve them.
+
+## Spring Data Support
+IntelliJ IDEA provides reverse engineering capabilities such as:
+
+* Generate entities from existing DB tables.
+* Generate Flyway and Liquibase migration scripts from JPA/JDBC entities.
+* Create diff scripts for Liquibase and Flyway on model changes. 
+* Update JPA/JDBC entities from schema changes
+
+### Generate Flyway migrations from entity changes
+In `ProductEntity`, add `category` and `isOutOfStock` fields:
+
+```java
+@Column(length = 200)
+private String category;
+
+@Column(columnDefinition = "boolean default false")
+private boolean isOutOfStock;
+```
+
+Generate Flyway Migration from these changes.
+
+### Synchronize DB changes into entities
+Add a new Flyway migration with the following script:
+
+```sql
+ALTER TABLE products ADD status VARCHAR(50);
+```
+
+Restart the application, verify that `status` column is added in `products` table.
+
+Synchronize DB changes using **Create Entity Attributes from DB...** option.
+
+### Spring Data finder method autocompletion 
+
+Create `UserEntity`, `UserRepository` and `UserService`:
+
+```java
+@Entity
+@Table(name = "users")
+public class UserEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
+    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_seq")
+    private Long id;
+    @Column(unique = true, nullable = false)
+    private String email;
+    @Column(nullable = false)
+    private String password;
+    private boolean disabled;
+    
+}
+```
+
+```java
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    
+}
+```
+
+```java
+@Service
+public class UserService {
+    //inject UserRepository
+    
+    public UserEntity login(String email, String password) {
+        return null;
+    }
+}
+```
+
+* Show Spring Data JPA findBy autocompletion 
+* Refactoring Spring Data methods to meaningful method names with `@Query`
+
+### Generate DTO, Spring Data Projections
+
+Generate `UserDto` and Spring Data Projection `UserInfo`
