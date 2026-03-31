@@ -1,11 +1,31 @@
 # Skyrocket Developer Productivity with Spring Boot & IntelliJ IDEA
 
-## Prerequisites
-* JDK 25+
-* [IntelliJ IDEA 2025.3+](https://www.jetbrains.com/idea/)
-* Docker & Docker Compose
+## Table of Contents
 
-Install JDK, Maven, Gradle, etc using [SDKMAN](https://sdkman.io/)
+1. [Prerequisites](#prerequisites)
+2. [Clone Repositories](#clone-repositories)
+3. [Local Development with Docker Compose & Testcontainers](#1-local-development-with-docker-compose--testcontainers)
+4. [Spring Debugger Plugin](#2-spring-debugger-plugin)
+   - [Database Connection Auto-Registration](#database-connection-auto-registration)
+   - [View Bean Loading Status](#view-bean-loading-status)
+   - [View Beans Runtime Info](#view-beans-runtime-info)
+   - [View Actual Property Values at Runtime](#view-actual-property-values-at-runtime)
+   - [Accessing Any Spring Bean from the Debugger](#accessing-any-spring-bean-from-the-debugger)
+   - [View/Trace Database Transactions](#viewtrace-database-transactions)
+   - [Remote Debugging](#remote-debugging)
+5. [Refactoring to Modular Monolith](#3-refactoring-to-modular-monolith)
+6. [Spring Data Support](#4-spring-data-support)
+7. [Kubernetes Deployment](#kubernetes-deployment)
+
+---
+
+## Prerequisites
+
+- JDK 25+
+- [IntelliJ IDEA 2025.3+](https://www.jetbrains.com/idea/)
+- Docker & Docker Compose
+
+Install JDK, Maven, and Gradle using [SDKMAN](https://sdkman.io/):
 
 ```shell
 $ curl -s "https://get.sdkman.io" | bash
@@ -15,7 +35,7 @@ $ sdk install maven
 $ sdk install gradle
 ```
 
-Pull the following docker images that will be used in the workshop:
+Pull the Docker images used in this workshop:
 
 ```shell
 docker pull postgres:18-alpine
@@ -29,88 +49,109 @@ docker pull axllent/mailpit:v1.29
 git clone https://github.com/sivaprasadreddy/spring-io-2026-intellijidea-workshop
 ```
 
-* Open the **bookstore** project in IntelliJ IDEA
+Open the **bookstore** project in IntelliJ IDEA.
 
-## 1. Local Development using Docker Compose & Testcontainers
-Spring Boot 3.1.0 introduced support for Docker Compose and Testcontainers that simplify local development and testing.
+---
 
-* ServiceConnection support for the most commonly used technologies (SQL/NoSQL DBs, Message Brokers, etc.)
-* Automatic container lifecycle management using dynamic ports
-* Simplified Integration Testing setup
+## 1. Local Development with Docker Compose & Testcontainers
+
+Spring Boot 3.1.0 introduced first-class support for Docker Compose and Testcontainers, simplifying both local development and testing:
+
+- `@ServiceConnection` support for commonly used technologies (SQL/NoSQL databases, message brokers, etc.)
+- Automatic container lifecycle management with dynamic port allocation
+- Simplified integration test setup
 
 ### Challenges:
-* Using fixed ports may result in port conflicts
-* Registering Database connections with DB Clients using dynamic ports is annoying 
+
+- Fixed ports can cause conflicts when multiple services run on the same machine.
+- Registering database connections in DB clients using dynamic ports is tedious to do manually.
+
+---
 
 ## 2. Spring Debugger Plugin
 
-* Install [Spring Debugger Plugin](https://plugins.jetbrains.com/plugin/25302-spring-debugger)
-* Spring Debugger [documentation](https://www.jetbrains.com/help/idea/spring-debugger.html)
+1. Install the [Spring Debugger Plugin](https://plugins.jetbrains.com/plugin/25302-spring-debugger).
+2. Refer to the [Spring Debugger documentation](https://www.jetbrains.com/help/idea/spring-debugger.html) for full feature details.
 
-### Database connection auto-registration
-When the application is started, the Database connections defined in Docker Compose or Testcontainers
-will be automatically detected and registered in the Database tool window.
+### Database Connection Auto-Registration
 
-* No need to manually add Database connections
-* No need to map to fixed ports on host and hence avoid port conflicts
-* Dynamic port mappings are detected and connections are registered.
+When the application starts, database connections defined in Docker Compose or Testcontainers are automatically detected and registered in the **Database** tool window.
 
-Start the application using `BookStoreApplication` to use Docker Compose.
-Or, use `TestBookStoreApplication` to use Testcontainers.
+**Benefits:**
+- No need to manually add database connections.
+- No need to map fixed ports on the host — dynamic port mappings are detected automatically.
 
-### View bean loading status
-* Start the application in **Debug** mode
-* In the package explorer, you should be able to see which beans, properties/yaml files are loaded and which are not.
-* Run `BookStoreApplicationTests` with a breakpoint in `contextLoads()` test, then `EmailService` beans should be in YELLOW color indicating mocked beans.
+**How to try it:**
+- Start the application via `BookStoreApplication` to use Docker Compose.
+- Or start via `TestBookStoreApplication` to use Testcontainers.
+
+### View Bean Loading Status
+
+1. Start the application in **Debug** mode.
+2. In the **Project** tool window, you can see which beans and property/YAML files are loaded and which are not.
+3. Run `BookStoreApplicationTests` with a breakpoint inside the `contextLoads()` test — `EmailService` beans appear in **yellow**, indicating they are mocked.
 
 ![beans-loaded-1.png](assets/images/beans-loaded-1.png)
 
-### View beans runtime info
-When the application is started in Debug mode, you can view Spring beans runtime info as inlay information.
+### View Beans Runtime Info
+
+When the application runs in **Debug** mode, Spring bean runtime information is shown as inlay hints directly in the editor.
 
 ![bean-runtime-info.png](assets/images/bean-runtime-info.png)
 
-### View actual property values at runtime
-The default application properties defined in application.properties/yml can be overridden by profile-specific config, environment variables, etc.
+### View Actual Property Values at Runtime
 
-You can see the actual property values as inlay info in `application.properties/yml`.
+Property values defined in `application.properties` or `application.yml` can be overridden by profile-specific config files or environment variables. 
+The actual resolved values are shown as inlay hints in the properties file.
 
-* Enable `local` profile and restart the application.
-* Set environment variable `APP_ORDERS_PER_PAGE=10`
+**How to try it:**
+1. Enable `local` profile and set an environment variable `APP_ORDERS_PER_PAGE=10`
+2. Restart the application
+3. Open `application.properties` — the overridden value appears inline
 
 ![actual-props-values.png](assets/images/actual-props-values.png)
 
-Click on the actual value to see the source of the overridden value.
+Click on the displayed value to navigate to the source of the override.
 
-### Accessing any Spring bean from the debugger
-When you hit a breakpoint, you can access any Spring bean in the ApplicationContext,
-not just the beans available within the current scope.
+### Accessing Any Spring Bean from the Debugger
 
-* Access `CacheManager`
-* Access `BookRepository`
-* Access `EntityManager`
-* Access `Environment`
+When you hit a breakpoint, you can access any bean from the `ApplicationContext` — not just the beans in the current scope.
 
-### View/trace database transactions
-The current database transaction information can be seen in the debugger.
-If there is a parent-child transaction hierarchy, we can navigate to where the transactions started.
+**Try accessing these beans from the debugger:**
+- `CacheManager`
+- `BookRepository`
+- `EntityManager`
+- `Environment`
 
-Invoke the API endpoint to create a new order:
+### View/Trace Database Transactions
 
-* Show single Transaction in `OrderService.createOrder()` method.
-* Show parent-child transaction hierarchy in `InventoryService.decreaseInventoryLevel()` method.
-* Show how `@EventListener` methods run in the same transaction started by the event publisher method.
-* Use `@Async`, `@TransactionalEventListener` and `@Transactional(propagation = Propagation.REQUIRES_NEW)`.
+The current database transaction state is visible in the debugger. 
+When a parent-child transaction hierarchy exists, you can navigate to where each transaction started.
 
-**JPA In-memory Pagination issue:**
-Invoke the API endpoint to get all orders and show how all Order entities are loaded in L1 cache.
+**How to try it:**
 
-Fix the issue:
+Invoke the API endpoint to create a new order, then set breakpoints to observe:
 
-Add the property: `spring.jpa.properties.hibernate.query.fail_on_pagination_over_collection_fetch=true`
+1. A single transaction inside `OrderService.createOrder()`.
+2. A parent-child transaction hierarchy inside `InventoryService.decreaseInventoryLevel()`.
+3. How `@EventListener` methods run within the same transaction as the event publisher.
+4. How using `@Async`, `@TransactionalEventListener`, and `@Transactional(propagation = Propagation.REQUIRES_NEW)` changes the transaction behavior.
+
+**JPA In-Memory Pagination Issue:**
+
+Invoke the API endpoint to fetch all orders and observe how all `OrderEntity` instances are loaded into the L1 cache.
+
+Fix by enabling Hibernate's pagination validation:
+
+```properties
+spring.jpa.properties.hibernate.query.fail_on_pagination_over_collection_fetch=true
+```
+
+Then refactor `OrderRepository` and `OrderService` to use a two-query approach:
 
 ```java
 interface OrderRepository {
+
     @Query("select o.id from OrderEntity o")
     Page<Long> findOrderIds(Pageable pageable);
 
@@ -118,8 +159,9 @@ interface OrderRepository {
     List<OrderEntity> findByIds(List<Long> orderIds);
 }
 
-
+@Service
 class OrderService {
+
     @Transactional(readOnly = true)
     public PagedResult<OrderDto> findOrders(int page) {
         Sort sort = Sort.by("id").descending();
@@ -131,38 +173,40 @@ class OrderService {
         return new PagedResult<>(ordersPage);
     }
 }
-
 ```
 
-### Remote debugging
+### Remote Debugging
 
-Run the application using Docker Compose by enabling remote debugging:
+To debug the application running inside Docker Compose, enable JDWP in `compose.yml`:
 
 ```yaml
 services:
   bookstore-layered:
-      image: sivaprasadreddy/bookstore-layered
-      container_name: bookstore-layered
-      environment:
-        JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
-        #...
-      ports:
-        - "8080:8080"
-        - "5005:5005"
+    image: sivaprasadreddy/bookstore-layered
+    container_name: bookstore-layered
+    environment:
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    ports:
+      - "8080:8080"
+      - "5005:5005"
 ```
 
-Connect to the application using **Remote JVM Debug**.
+Then create a **Remote JVM Debug** run configuration in IntelliJ IDEA targeting port `5005`.
 
-When you hit a breakpoint, you can see the Spring Debugger features available while remote debugging as well.
+All Spring Debugger features (bean info, transaction tracing, etc.) are also available during remote debugging sessions.
+
+---
 
 ## 3. Refactoring to Modular Monolith
 
-**Step 1:** Add Spring Modulith support
+### Step 1: Add Spring Modulith dependencies
 
-Add Spring Modulith Test dependency:
+Add the BOM and test dependency to `pom.xml`:
 
 ```xml
-<spring-modulith.version>2.0.3</spring-modulith.version>
+<properties>
+    <spring-modulith.version>2.0.3</spring-modulith.version>
+</properties>
 
 <dependencyManagement>
     <dependencies>
@@ -176,14 +220,16 @@ Add Spring Modulith Test dependency:
     </dependencies>
 </dependencyManagement>
 
-<dependency>
-    <groupId>org.springframework.modulith</groupId>
-    <artifactId>spring-modulith-starter-test</artifactId>
-    <scope>test</scope>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.modulith</groupId>
+        <artifactId>spring-modulith-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
 ```
 
-Create `ModularityTest`:
+### Step 2: Create a modularity verification test
 
 ```java
 import org.junit.jupiter.api.Test;
@@ -191,7 +237,8 @@ import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.modulith.docs.Documenter;
 
 class ModularityTest {
-    static ApplicationModules modules = 
+
+    static ApplicationModules modules =
             ApplicationModules.of(BookStoreApplication.class);
 
     @Test
@@ -202,31 +249,40 @@ class ModularityTest {
 }
 ```
 
-**Step 2:** Refactor/move code into separate top-level modules(packages)
+### Step 3: Refactor code into top-level module packages
 
-* `shared`
-* `catalog`
-* `orders`
-* `notification`
-* `config`
+Move code into the following top-level packages:
 
-The refactored code is in `bookstore-modulith-wip` project.
+| Package        | Responsibility                              |
+|----------------|---------------------------------------------|
+| `shared`       | Cross-cutting models shared across modules  |
+| `catalog`      | Product catalog management                  |
+| `orders`       | Order processing                            |
+| `notification` | Email and notification services             |
+| `config`       | Application-wide configuration              |
 
-* Show Modules in the Structure tool window
-* Show package icons representing open/closed packages/modules
-* Show Spring Modulith violations.
-* Use IntelliJ quickfixes to resolve them.
+The refactored code is available in the `bookstore-modulith-wip` project for reference.
+
+**What to explore in IntelliJ IDEA:**
+- View modules in the **Structure** tool window.
+- Observe open/closed package icons that indicate module visibility.
+- Review Spring Modulith violations highlighted by the IDE.
+- Use IntelliJ quick-fixes to resolve violations.
+
+---
 
 ## 4. Spring Data Support
-IntelliJ IDEA provides reverse engineering capabilities such as:
 
-* Generate entities from existing DB tables.
-* Generate Flyway and Liquibase migration scripts from JPA/JDBC entities.
-* Create diff scripts for Liquibase and Flyway on model changes. 
-* Update JPA/JDBC entities from schema changes.
+IntelliJ IDEA provides the following Spring Data reverse-engineering capabilities:
 
-### Generate Flyway migrations from entity changes
-In `ProductEntity`, add `category` and `isOutOfStock` fields:
+- Generate JPA entities from existing database tables.
+- Generate Flyway and Liquibase migration scripts from JPA/JDBC entity changes.
+- Create diff scripts for Flyway/Liquibase based on model changes.
+- Synchronize JPA/JDBC entities from schema changes.
+
+### Generate a Flyway Migration from Entity Changes
+
+Add `category` and `isOutOfStock` fields to `ProductEntity`:
 
 ```java
 @Column(length = 200)
@@ -236,22 +292,23 @@ private String category;
 private boolean isOutOfStock;
 ```
 
-Generate Flyway Migration from these changes.
+Use **Generate Flyway Migration** from IntelliJ IDEA to create the corresponding migration script automatically.
 
-### Synchronize DB changes into entities
-Add a new Flyway migration with the following script:
+### Synchronize Database Changes into Entities
+
+Create a new Flyway migration with the following SQL:
 
 ```sql
 ALTER TABLE products ADD status VARCHAR(50);
 ```
 
-Restart the application, verify that `status` column is added in `products` table.
+Restart the application and verify that the `status` column appears in the `products` table.
 
-Synchronize DB changes using the **Create Entity Attributes from DB...** option.
+Then use the **Create Entity Attributes from DB...** option in IntelliJ IDEA to synchronize the schema change back into `ProductEntity`.
 
-### Spring Data finder method autocompletion 
+### Spring Data Finder Method Autocompletion
 
-Create `UserEntity`, `UserRepository` and `UserService`:
+Create `UserEntity`, `UserRepository`, and `UserService`:
 
 ```java
 @Entity
@@ -262,44 +319,60 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
     @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_seq")
     private Long id;
+
     @Column(unique = true, nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String password;
+
     private boolean disabled;
-    
 }
 ```
 
 ```java
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    
 }
 ```
 
 ```java
 @Service
 public class UserService {
-    //inject UserRepository
-    
+
+    // inject UserRepository
+
     public UserEntity login(String email, String password) {
         return null;
     }
 }
 ```
 
-* Show Spring Data JPA findBy autocompletion 
-* Refactoring Spring Data methods to meaningful method names with `@Query`
+**What to explore:**
+- Spring Data JPA `findBy` method autocompletion in `UserRepository`.
+- Refactoring derived query methods to named queries using `@Query`.
 
-### Generate DTO, Spring Data Projections
+### Generate DTOs and Spring Data Projections
 
-Generate `UserDto` and Spring Data Projection `UserInfo`
+Use IntelliJ IDEA's code generation to create:
+- `UserDto` — a plain data transfer object.
+- `UserInfo` — a Spring Data projection interface.
+
+---
 
 ## Kubernetes Deployment
 
-* Create a Kind Cluster: `./deploy/kind/kind-cluster.sh create`
-* Connect to the Kubernetes cluster from the Services tool window
-* Load the docker image into the kind cluster: `kind load docker-image sivaprasadreddy/bookstore-modulith --name bookstore`
-* Open kubernetes manifest in `deploy/k8s` directory and deploy the resources.
-* Port-forward the database port and connect to the Postgresql database from the Database tool window
-* Port-forward to the application and access the API endpoint `http://localhost:8080/api/products`
+1. Create a Kind cluster:
+   ```shell
+   ./deploy/kind/kind-cluster.sh create
+   ```
+2. Connect to the Kubernetes cluster from the **Services** tool window in IntelliJ IDEA.
+3. Load the Docker image into the Kind cluster:
+   ```shell
+   kind load docker-image sivaprasadreddy/bookstore-modulith --name bookstore
+   ```
+4. Open the Kubernetes manifests in `deploy/k8s/` and apply them.
+5. Port-forward the database port and connect to PostgreSQL from the **Database** tool window.
+6. Port-forward to the application and access the API:
+   ```
+   http://localhost:8080/api/products
+   ```
