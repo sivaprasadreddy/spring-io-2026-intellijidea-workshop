@@ -20,33 +20,3 @@ Through practical examples and guided exercises, we’ll explore:
 By the end of the session, attendees will be able to incorporate these productivity tips into their day-to-day work 
 and experience the improved developer productivity.
 
-##  Workshop
-
-* Spring Boot Tips & Tricks
-    * Project Creation Support
-    * Spring Component Creation Support
-    * Autowired, Quickfix, Automatic Bean injection
-    * Logger injection
-* Application Insights
-    * Structure Tool window
-    * Bean Runtime Info as Inlay Info
-    * Programmatic Bean Registration
-* Spring Data:
-    * Generating JPA/JDBC entities from DB
-    * Generating Flyway/Liquibase migrations from JPA/JDBC entities
-    * Click Database + gutter icon to create DataSource connection
-    * Drag DataSource connection to application.properties
-    * Sync DB and JPA/JDBC entities
-    * Inline Spring Data Repository method creation
-    * Spring Data DTO, Projection
-    * MapStruct Support
-    * Spring Data AOT support
-* Spring WebMVC:
-    * API Versioning
-    * HTTP Client Support
-* Spring Modulith
-* Spring Debugger
-* jSpecify support
-* Tips & Tricks:
-    * Paste the code snippet to create a file
-    * Dot dot completion

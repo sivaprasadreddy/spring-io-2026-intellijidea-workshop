@@ -26,16 +26,39 @@ docker pull axllent/mailpit:v1.29
 ## Clone Repositories
 
 ```shell
-git clone https://github.com/sivaprasadreddy/springio-2026-demo
+git clone https://github.com/sivaprasadreddy/spring-io-2026-intellijidea-workshop
 ```
 
-## Spring Debugger Plugin
+* Open the **bookstore** project in IntelliJ IDEA
+
+## 1. Local Development using Docker Compose & Testcontainers
+Spring Boot 3.1.0 introduced support for Docker Compose and Testcontainers that simplify local development and testing.
+
+* ServiceConnection support for the most commonly used technologies (SQL/NoSQL DBs, Message Brokers, etc.)
+* Automatic container lifecycle management using dynamic ports
+* Simplified Integration Testing setup
+
+### Challenges:
+* Using fixed ports may result in port conflicts
+* Registering Database connections with DB Clients using dynamic ports is annoying 
+
+## 2. Spring Debugger Plugin
 
 * Install [Spring Debugger Plugin](https://plugins.jetbrains.com/plugin/25302-spring-debugger)
 * Spring Debugger [documentation](https://www.jetbrains.com/help/idea/spring-debugger.html)
 
+### Database connection auto-registration
+When the application is started, the Database connections defined in Docker Compose or Testcontainers
+will be automatically detected and registered in the Database tool window.
+
+* No need to manually add Database connections
+* No need to map to fixed ports on host and hence avoid port conflicts
+* Dynamic port mappings are detected and connections are registered.
+
+Start the application using `BookStoreApplication` to use Docker Compose.
+Or, use `TestBookStoreApplication` to use Testcontainers.
+
 ### View bean loading status
-* Open **springio-2026-demo** project in IntelliJ IDEA
 * Start the application in **Debug** mode
 * In the package explorer, you should be able to see which beans, properties/yaml files are loaded and which are not.
 * Run `BookStoreApplicationTests` with a breakpoint in `contextLoads()` test, then `EmailService` beans should be in YELLOW color indicating mocked beans.
@@ -58,17 +81,6 @@ You can see the actual property values as inlay info in `application.properties/
 ![actual-props-values.png](assets/images/actual-props-values.png)
 
 Click on the actual value to see the source of the overridden value.
-
-### Database connection auto-registration
-When the application is started, the Database connections defined in Docker Compose or Testcontainers 
-will be automatically detected and registered in the Database tool window.
-
-* No need to manually add Database connections
-* No need to map to fixed ports on host and hence avoid port conflicts
-* Dynamic port mappings are detected and connections are registered.
-
-Start the application using `BookStoreApplication` to use Docker Compose.
-Or, use `TestBookStoreApplication` to use Testcontainers.
 
 ### Accessing any Spring bean from the debugger
 When you hit a breakpoint, you can access any Spring bean in the ApplicationContext,
@@ -128,9 +140,9 @@ Run the application using Docker Compose by enabling remote debugging:
 
 ```yaml
 services:
-  springio-2026-demo:
-      image: sivaprasadreddy/springio-2026-demo
-      container_name: springio-2026-demo
+  bookstore-layered:
+      image: sivaprasadreddy/bookstore-layered
+      container_name: bookstore-layered
       environment:
         JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
         #...
@@ -143,9 +155,9 @@ Connect to the application using **Remote JVM Debug**.
 
 When you hit a breakpoint, you can see the Spring Debugger features available while remote debugging as well.
 
-## Refactoring to Modular Monolith
+## 3. Refactoring to Modular Monolith
 
-**Step 1:** Checkout `modulith-start` branch or manually add the following changes:
+**Step 1:** Add Spring Modulith support
 
 Add Spring Modulith Test dependency:
 
@@ -192,20 +204,26 @@ class ModularityTest {
 
 **Step 2:** Refactor/move code into separate top-level modules(packages)
 
-Checkout `modulith-refactored` branch.
+* `shared`
+* `catalog`
+* `orders`
+* `notification`
+* `config`
+
+The refactored code is in `bookstore-modulith-wip` project.
 
 * Show Modules in the Structure tool window
 * Show package icons representing open/closed packages/modules
 * Show Spring Modulith violations.
 * Use IntelliJ quickfixes to resolve them.
 
-## Spring Data Support
+## 4. Spring Data Support
 IntelliJ IDEA provides reverse engineering capabilities such as:
 
 * Generate entities from existing DB tables.
 * Generate Flyway and Liquibase migration scripts from JPA/JDBC entities.
 * Create diff scripts for Liquibase and Flyway on model changes. 
-* Update JPA/JDBC entities from schema changes
+* Update JPA/JDBC entities from schema changes.
 
 ### Generate Flyway migrations from entity changes
 In `ProductEntity`, add `category` and `isOutOfStock` fields:
@@ -229,7 +247,7 @@ ALTER TABLE products ADD status VARCHAR(50);
 
 Restart the application, verify that `status` column is added in `products` table.
 
-Synchronize DB changes using **Create Entity Attributes from DB...** option.
+Synchronize DB changes using the **Create Entity Attributes from DB...** option.
 
 ### Spring Data finder method autocompletion 
 
@@ -276,3 +294,12 @@ public class UserService {
 ### Generate DTO, Spring Data Projections
 
 Generate `UserDto` and Spring Data Projection `UserInfo`
+
+## Kubernetes Deployment
+
+* Create a Kind Cluster: `./deploy/kind/kind-cluster.sh create`
+* Connect to the Kubernetes cluster from the Services tool window
+* Load the docker image into the kind cluster: `kind load docker-image sivaprasadreddy/bookstore-modulith --name bookstore`
+* Open kubernetes manifest in `deploy/k8s` directory and deploy the resources.
+* Port-forward the database port and connect to the Postgresql database from the Database tool window
+* Port-forward to the application and access the API endpoint `http://localhost:8080/api/products`
