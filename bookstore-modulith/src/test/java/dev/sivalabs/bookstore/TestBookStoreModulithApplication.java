@@ -2,10 +2,10 @@ package dev.sivalabs.bookstore;
 
 import org.springframework.boot.SpringApplication;
 
-public class TestBookStoreApplication {
+public class TestBookStoreModulithApplication {
 
     public static void main(String[] args) {
-        SpringApplication.from(BookStoreApplication::main)
+        SpringApplication.from(BookStoreModulithApplication::main)
                 .with(TestcontainersConfiguration.class)
                 .run(args);
     }

@@ -10,10 +10,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @ConfigurationPropertiesScan
 @EnableAsync
 @EnableCaching
-public class BookStoreApplication {
+public class BookStoreModulithWipApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BookStoreApplication.class, args);
+        SpringApplication.run(BookStoreModulithWipApplication.class, args);
     }
 
 }

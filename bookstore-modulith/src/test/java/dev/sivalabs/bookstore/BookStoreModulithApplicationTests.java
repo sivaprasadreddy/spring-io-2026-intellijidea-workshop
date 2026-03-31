@@ -4,7 +4,7 @@ import dev.sivalabs.bookstore.notification.EmailService;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-class BookStoreApplicationTests extends BaseIT {
+class BookStoreModulithApplicationTests extends BaseIT {
 
     @MockitoBean
     EmailService emailService;
