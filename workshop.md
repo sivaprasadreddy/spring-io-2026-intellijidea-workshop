@@ -276,10 +276,16 @@ class ModularityTest {
 
 **What to explore in IntelliJ IDEA:**
 - View modules in the **Structure** tool window.
-- Observe open/closed package icons that indicate module visibility.
-- Review Spring Modulith violations highlighted by the IDE.
-- Use IntelliJ quick-fixes to resolve violations.
+![spring-modulith-structure-tool-window.png](assets/images/spring-modulith-structure-tool-window.png)
 
+- Observe open/closed package icons that indicate module visibility.
+![spring-modulith-package-states.png](assets/images/spring-modulith-package-states.png)
+
+- Review Spring Modulith violations highlighted by the IDE.
+![spring-modulith-violations.png](assets/images/spring-modulith-violations.png)
+
+- Use IntelliJ quick-fixes to resolve violations.
+![spring-modulith-quickfixes.png](assets/images/spring-modulith-quickfixes.png)
 ---
 
 ## 4. Spring Data Support
