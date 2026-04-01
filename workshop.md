@@ -122,11 +122,15 @@ When you hit a breakpoint, you can access any bean from the `ApplicationContext`
 - `BookRepository`
 - `EntityManager`
 - `Environment`
+- 
+![access-any-spring-bean.png](assets/images/access-any-spring-bean.png)
 
 ### View/Trace Database Transactions
 
 The current database transaction state is visible in the debugger. 
 When a parent-child transaction hierarchy exists, you can navigate to where each transaction started.
+
+![view-transaction.png](assets/images/view-transaction.png)
 
 **How to try it:**
 
@@ -136,6 +140,10 @@ Invoke the API endpoint to create a new order, then set breakpoints to observe:
 2. A parent-child transaction hierarchy inside `InventoryService.decreaseInventoryLevel()`.
 3. How `@EventListener` methods run within the same transaction as the event publisher.
 4. How using `@Async`, `@TransactionalEventListener`, and `@Transactional(propagation = Propagation.REQUIRES_NEW)` changes the transaction behavior.
+
+You can view the currently loaded JPA entities and their state.
+
+![loaded-jpa-entities.png](assets/images/loaded-jpa-entities.png)
 
 **JPA In-Memory Pagination Issue:**
 
@@ -229,7 +237,22 @@ Add the BOM and test dependency to `pom.xml`:
 </dependencies>
 ```
 
-### Step 2: Create a modularity verification test
+### Step 2: Refactor code into top-level module packages
+
+Move code into the following top-level packages:
+
+| Package        | Responsibility                              |
+|----------------|---------------------------------------------|
+| `shared`       | Cross-cutting models shared across modules  |
+| `catalog`      | Product catalog management                  |
+| `orders`       | Order processing                            |
+| `notification` | Email and notification services             |
+| `config`       | Application-wide configuration              |
+
+The refactored code is available in the `bookstore-modulith-wip` project for reference.
+
+
+### Step 3: Create a modularity verification test
 
 ```java
 import org.junit.jupiter.api.Test;
@@ -249,19 +272,7 @@ class ModularityTest {
 }
 ```
 
-### Step 3: Refactor code into top-level module packages
-
-Move code into the following top-level packages:
-
-| Package        | Responsibility                              |
-|----------------|---------------------------------------------|
-| `shared`       | Cross-cutting models shared across modules  |
-| `catalog`      | Product catalog management                  |
-| `orders`       | Order processing                            |
-| `notification` | Email and notification services             |
-| `config`       | Application-wide configuration              |
-
-The refactored code is available in the `bookstore-modulith-wip` project for reference.
+### Step 4: Leverage Spring Modulith support in IntelliJ IDEA
 
 **What to explore in IntelliJ IDEA:**
 - View modules in the **Structure** tool window.
