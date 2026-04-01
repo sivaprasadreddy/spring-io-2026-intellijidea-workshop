@@ -275,6 +275,7 @@ class ModularityTest {
 ### Step 4: Leverage Spring Modulith support in IntelliJ IDEA
 
 **What to explore in IntelliJ IDEA:**
+
 - View modules in the **Structure** tool window.
 ![spring-modulith-structure-tool-window.png](assets/images/spring-modulith-structure-tool-window.png)
 
@@ -286,6 +287,7 @@ class ModularityTest {
 
 - Use IntelliJ quick-fixes to resolve violations.
 ![spring-modulith-quickfixes.png](assets/images/spring-modulith-quickfixes.png)
+
 ---
 
 ## 4. Spring Data Support
