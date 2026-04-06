@@ -7,6 +7,7 @@ public class TestBookStoreModulithWipApplication {
     public static void main(String[] args) {
         SpringApplication.from(BookStoreModulithWipApplication::main)
                 .with(TestcontainersConfiguration.class)
+                .withAdditionalProfiles("test")
                 .run(args);
     }
 }

@@ -7,6 +7,7 @@ public class TestBookStoreApplication {
     public static void main(String[] args) {
         SpringApplication.from(BookStoreApplication::main)
                 .with(TestcontainersConfiguration.class)
+                .withAdditionalProfiles("test")
                 .run(args);
     }
 }

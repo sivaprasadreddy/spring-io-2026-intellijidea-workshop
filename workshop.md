@@ -43,7 +43,7 @@ docker pull redis:8.4.0
 docker pull axllent/mailpit:v1.29
 ```
 
-## Clone Repositories
+## Clone Repository
 
 ```shell
 git clone https://github.com/sivaprasadreddy/spring-io-2026-intellijidea-workshop
@@ -60,6 +60,10 @@ Spring Boot 3.1.0 introduced first-class support for Docker Compose and Testcont
 - `@ServiceConnection` support for commonly used technologies (SQL/NoSQL databases, message brokers, etc.)
 - Automatic container lifecycle management with dynamic port allocation
 - Simplified integration test setup
+
+**Spring Boot Docs:**
+- [Docker Compose Support](https://docs.spring.io/spring-boot/reference/features/dev-services.html#features.dev-services.docker-compose)
+- [Testcontainers](https://docs.spring.io/spring-boot/reference/testing/testcontainers.html#testing.testcontainers.service-connections)
 
 ### Challenges:
 
@@ -93,12 +97,6 @@ When the application starts, database connections defined in Docker Compose or T
 
 ![beans-loaded-1.png](assets/images/beans-loaded-1.png)
 
-### View Beans Runtime Info
-
-When the application runs in **Debug** mode, Spring bean runtime information is shown as inlay hints directly in the editor.
-
-![bean-runtime-info.png](assets/images/bean-runtime-info.png)
-
 ### View Actual Property Values at Runtime
 
 Property values defined in `application.properties` or `application.yml` can be overridden by profile-specific config files or environment variables. 
@@ -113,6 +111,12 @@ The actual resolved values are shown as inlay hints in the properties file.
 
 Click on the displayed value to navigate to the source of the override.
 
+### View Beans Runtime Info
+
+When the application runs in **Debug** mode, Spring bean runtime information is shown as inlay hints directly in the editor.
+
+![bean-runtime-info.png](assets/images/bean-runtime-info.png)
+
 ### Accessing Any Spring Bean from the Debugger
 
 When you hit a breakpoint, you can access any bean from the `ApplicationContext` — not just the beans in the current scope.
@@ -122,7 +126,7 @@ When you hit a breakpoint, you can access any bean from the `ApplicationContext`
 - `BookRepository`
 - `EntityManager`
 - `Environment`
-- 
+
 ![access-any-spring-bean.png](assets/images/access-any-spring-bean.png)
 
 ### View/Trace Database Transactions

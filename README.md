@@ -1,6 +1,7 @@
-# Spring I/O IntelliJ IDEA Workshop
+# Spring I/O 2026 - IntelliJ IDEA Workshop
 
-## Abstract
+[Skyrocket Developer Productivity with Spring Boot & IntelliJ IDEA](https://2026.springio.net/sessions/skyrocket-developer-productivity-with-spring-boot-and-intellij-idea/)
+
 Java and Spring Boot continue to be the dominant technologies in enterprise software development. 
 IntelliJ IDEA remains the preferred IDE of choice for JVM application developers, offering rich tooling 
 and deep framework integration. The powerful combination of Spring Boot and IntelliJ IDEA can significantly 
