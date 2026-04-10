@@ -6,7 +6,7 @@ metadata:
 data:
   postgres_host: "bookstore-postgres-svc"
   postgres_port: "5432"
-  postgres_database: "bookstoredb"
+  postgres_database: "postgres"
   redis_host: "bookstore-redis-svc"
   redis_port: "6379"
 ---
