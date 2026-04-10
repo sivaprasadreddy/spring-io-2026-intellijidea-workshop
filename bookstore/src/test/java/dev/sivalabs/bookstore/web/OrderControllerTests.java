@@ -88,6 +88,6 @@ class OrderControllerTests {
                 .returnResult().getResponseBody();
 
         assertThat(ordersPage).isNotNull();
-        assertThat(ordersPage.data()).hasSize(5);
+        assertThat(ordersPage.data()).hasSize(23);
     }
 }
