@@ -1,23 +1,25 @@
 services:
   postgres:
-    image: 'postgres:18-alpine'
+    image: "postgres:18-alpine"
     environment:
-      - 'POSTGRES_DB=postgres'
-      - 'POSTGRES_PASSWORD=postgres'
-      - 'POSTGRES_USER=postgres'
+      - "POSTGRES_DB=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+      - "POSTGRES_USER=postgres"
     ports:
-      - '5432'
+      - "5432"
+
+  redis:
+    image: redis:8.4.0
+    ports:
+      - "6379:6379"
+    #labels:
+    #  org.springframework.boot.service-connection: redis
 
   mailpit:
     image: axllent/mailpit:v1.29
     ports:
       - "1025:1025"
       - "8025:8025"
-
-  redis:
-    image: redis:8.4.0
-    ports:
-      - "6379:6379"
 
   bookstore-layered:
     image: sivaprasadreddy/bookstore-layered
@@ -38,6 +40,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - mailpit
     restart: unless-stopped
     profiles:
       - app

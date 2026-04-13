@@ -14,8 +14,8 @@
    - [View/Trace Database Transactions](#viewtrace-database-transactions)
    - [Remote Debugging](#remote-debugging)
 5. [Refactoring to Modular Monolith](#3-refactoring-to-modular-monolith)
-6. [Spring Data Support](#4-spring-data-support)
-7. [Kubernetes Deployment](#kubernetes-deployment)
+6. [Kubernetes Deployment](#4-kubernetes-deployment)
+7. [Spring Data Support](#5-spring-data-support)
 
 ---
 
@@ -298,7 +298,27 @@ class ModularityTest {
 
 ---
 
-## 4. Spring Data Support
+## 4. Kubernetes Deployment
+
+1. Create a Kind cluster:
+   ```shell
+   ./deploy/kind/kind-cluster.sh create
+   ```
+2. Connect to the Kubernetes cluster from the **Services** tool window in IntelliJ IDEA.
+3. Load the Docker image into the Kind cluster:
+   ```shell
+   kind load docker-image sivaprasadreddy/bookstore-modulith --name bookstore
+   ```
+4. Open the Kubernetes manifests in `deploy/k8s/` and apply them.
+5. Port-forward the database port and connect to PostgreSQL from the **Database** tool window.
+6. Port-forward to the application and access the API:
+   ```
+   http://localhost:8080/api/products
+   ```
+
+---
+
+## 5. Spring Data Support
 
 IntelliJ IDEA provides the following Spring Data reverse-engineering capabilities:
 
@@ -385,21 +405,3 @@ Use IntelliJ IDEA's code generation to create:
 - `UserInfo` — a Spring Data projection interface.
 
 ---
-
-## Kubernetes Deployment
-
-1. Create a Kind cluster:
-   ```shell
-   ./deploy/kind/kind-cluster.sh create
-   ```
-2. Connect to the Kubernetes cluster from the **Services** tool window in IntelliJ IDEA.
-3. Load the Docker image into the Kind cluster:
-   ```shell
-   kind load docker-image sivaprasadreddy/bookstore-modulith --name bookstore
-   ```
-4. Open the Kubernetes manifests in `deploy/k8s/` and apply them.
-5. Port-forward the database port and connect to PostgreSQL from the **Database** tool window.
-6. Port-forward to the application and access the API:
-   ```
-   http://localhost:8080/api/products
-   ```
