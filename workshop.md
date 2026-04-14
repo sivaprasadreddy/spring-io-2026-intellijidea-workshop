@@ -3,9 +3,8 @@
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
-2. [Clone Repositories](#clone-repositories)
-3. [Local Development with Docker Compose & Testcontainers](#1-local-development-with-docker-compose--testcontainers)
-4. [Spring Debugger Plugin](#2-spring-debugger-plugin)
+2. [Local Development with Docker Compose & Testcontainers](#1-local-development-with-docker-compose--testcontainers)
+3. [Spring Debugger Plugin](#2-spring-debugger-plugin)
    - [Database Connection Auto-Registration](#database-connection-auto-registration)
    - [View Bean Loading Status](#view-bean-loading-status)
    - [View Actual Property Values at Runtime](#view-actual-property-values-at-runtime)
@@ -13,9 +12,9 @@
    - [Accessing Any Spring Bean from the Debugger](#accessing-any-spring-bean-from-the-debugger)
    - [View/Trace Database Transactions](#viewtrace-database-transactions)
    - [Remote Debugging](#remote-debugging)
-5. [Refactoring to Modular Monolith](#3-refactoring-to-modular-monolith)
-6. [Kubernetes Deployment](#4-kubernetes-deployment)
-7. [Spring Data Support](#5-spring-data-support)
+4. [Refactoring to Modular Monolith](#3-refactoring-to-modular-monolith)
+5. [Kubernetes Deployment](#4-kubernetes-deployment)
+6. [Spring Data Support](#5-spring-data-support)
 
 ---
 
