@@ -21,7 +21,7 @@ tasks:
       - "{{.MVNW}} spring-boot:build-image -DskipTests -DdockerImageName={{.IMAGE_NAME}}"
 
   start:
-    deps: [ build_image ]
+    #deps: [ build_image ]
     cmds:
       - docker compose --profile app -f "{{.DC_FILE}}" up --force-recreate -d
 

@@ -21,9 +21,9 @@ services:
       - "1025:1025"
       - "8025:8025"
 
-  springio-2026-demo:
-    image: sivaprasadreddy/springio-2026-demo
-    container_name: springio-2026-demo
+  bookstore-modulith:
+    image: sivaprasadreddy/bookstore-modulith
+    container_name: bookstore-modulith
     environment:
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
       SPRING_PROFILES_ACTIVE: docker

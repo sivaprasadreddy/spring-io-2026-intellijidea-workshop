@@ -21,9 +21,9 @@ services:
       - "1025:1025"
       - "8025:8025"
 
-  bookstore-modulith:
-    image: sivaprasadreddy/bookstore-modulith
-    container_name: bookstore-modulith
+  bookstore-modulith-wip:
+    image: sivaprasadreddy/bookstore-modulith-wip
+    container_name: bookstore-modulith-wip
     environment:
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
       SPRING_PROFILES_ACTIVE: docker
