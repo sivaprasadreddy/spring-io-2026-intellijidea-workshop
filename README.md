@@ -21,3 +21,4 @@ Through practical examples and guided exercises, we’ll explore:
 By the end of the session, attendees will be able to incorporate these productivity tips into their day-to-day work 
 and experience the improved developer productivity.
 
+* [Workshop](workshop.md)
