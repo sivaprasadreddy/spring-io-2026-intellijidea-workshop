@@ -28,6 +28,7 @@ class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     CreateOrderResult createOrder(@Valid @RequestBody CreateOrderCmd cmd) {
+        log.info("Creating order for customer: {}", cmd.customer().email());
         var savedOrder = orderService.createOrder(cmd);
         return new CreateOrderResult(savedOrder.getOrderNumber());
     }

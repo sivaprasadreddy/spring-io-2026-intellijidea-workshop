@@ -30,6 +30,7 @@ public class JavaMailService implements EmailService {
     }
 
     public void send(List<String> to, String subject, String content) {
+        log.info("Sending email to: {}", to);
         String supportEmail = properties.supportEmail();
         try {
             MimeMessage message = javaMailSender.createMimeMessage();

@@ -59,12 +59,14 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public Optional<OrderDto> findOrder(UUID orderNumber) {
+        log.info("Fetching order by orderNumber: {}", orderNumber);
         return orderRepository.findByOrderNumber(orderNumber)
                 .map(orderMapper::convertToDto);
     }
 
     @Transactional(readOnly = true)
     public PagedResult<OrderDto> findOrders(int page) {
+        log.info("Fetching orders for page: {}", page);
         Sort sort = Sort.by("id").descending();
         Pageable pageable = PageRequest.of(page - 1, ordersPerPage, sort);
         var ordersPage = orderRepository.findAllBy(pageable)
